@@ -1,0 +1,19 @@
+diff --git a/lib/prompts/autocomplete.js b/lib/prompts/autocomplete.js
+index c3b8b10b1cce0fee438151817352ca276b064033..a38e1276e4a1b6ce729fba9ff676c51f177751b7 100644
+--- a/lib/prompts/autocomplete.js
++++ b/lib/prompts/autocomplete.js
+@@ -3,10 +3,12 @@
+ const Select = require('./select');
+ 
+ const highlight = (input, color) => {
+-  const regex = input ? new RegExp(input, 'ig') : /$^/;
++  // Escape special regex characters to prevent invalid regex errors
++  const escaped = input ? input.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') : '';
++  const regex = escaped ? new RegExp(escaped, 'ig') : /$^/;
+ 
+   return str => {
+-    return input ? str.replace(regex, match => color(match)) : str;
++    return escaped ? str.replace(regex, match => color(match)) : str;
+   };
+ };
+ 

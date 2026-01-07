@@ -1,6 +1,6 @@
 {
   "name": "@react-component-selector-mcp/cli",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "CLI and MCP server for react-component-selector-mcp",
   "license": "MIT",
   "author": "zakstam",
@@ -42,7 +42,6 @@
     "clean": "rimraf dist"
   },
   "dependencies": {
-    "@react-component-selector-mcp/shared": "workspace:*",
     "@modelcontextprotocol/sdk": "^1.0.0",
     "commander": "^12.1.0",
     "nanoid": "^5.0.9",
@@ -50,6 +49,7 @@
     "zod": "^3.24.1"
   },
   "devDependencies": {
+    "@react-component-selector-mcp/shared": "workspace:*",
     "@types/node": "^22.10.2",
     "@types/ws": "^8.5.13",
     "rimraf": "^6.0.1",

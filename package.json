@@ -14,7 +14,7 @@
     "release:check": "pnpm typecheck && pnpm build",
     "release:prepare": "changeset",
     "release:version": "changeset version",
-    "release:publish": "pnpm build && changeset publish",
+    "release:publish": "changeset publish",
     "release:status": "changeset status",
     "release:full": "pnpm release:check && pnpm release:version && pnpm release:publish"
   },
@@ -22,5 +22,13 @@
     "@changesets/cli": "^2.27.1",
     "typescript": "^5.7.2",
     "ws": "^8.18.0"
+  },
+  "pnpm": {
+    "patchedDependencies": {
+      "enquirer@2.4.1": "patches/enquirer@2.4.1.patch"
+    },
+    "patchedDependenciesComments": {
+      "enquirer@2.4.1": "Fixes regex crash on Windows paths (backslash chars). See: https://github.com/enquirer/enquirer/issues/285"
+    }
   }
 }

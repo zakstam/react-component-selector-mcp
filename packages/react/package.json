@@ -1,6 +1,6 @@
 {
   "name": "@react-component-selector-mcp/react",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "React component selector with browser selection UI",
   "license": "MIT",
   "author": "zakstam",
@@ -11,8 +11,17 @@
   },
   "homepage": "https://github.com/zakstam/react-component-selector-mcp",
   "bugs": "https://github.com/zakstam/react-component-selector-mcp/issues",
-  "keywords": ["react", "component", "selector", "mcp", "claude", "model-context-protocol"],
-  "files": ["dist"],
+  "keywords": [
+    "react",
+    "component",
+    "selector",
+    "mcp",
+    "claude",
+    "model-context-protocol"
+  ],
+  "files": [
+    "dist"
+  ],
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
