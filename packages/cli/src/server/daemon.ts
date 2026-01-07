@@ -152,8 +152,7 @@ export class DaemonServer {
 
   private handleGetHistory(url: URL, res: http.ServerResponse): void {
     const limit = parseInt(url.searchParams.get('limit') || '10', 10);
-    const includeScreenshots = url.searchParams.get('screenshots') === 'true';
-    const history = this.storage.getHistory(limit, includeScreenshots);
+    const history = this.storage.getHistory(limit);
 
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({ selections: history }));

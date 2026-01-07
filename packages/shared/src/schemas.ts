@@ -30,12 +30,6 @@ export const DOMInfoSchema = z.object({
   boundingRect: BoundingRectSchema,
 });
 
-export const ScreenshotSchema = z.object({
-  dataUrl: z.string(),
-  width: z.number(),
-  height: z.number(),
-});
-
 export const SelectionContextSchema = z.object({
   pageUrl: z.string(),
   parentComponents: z.array(z.string()),
@@ -49,7 +43,6 @@ export const SelectionDataSchema = z.object({
   props: z.record(z.unknown()),
   state: z.record(z.unknown()).nullable(),
   dom: DOMInfoSchema,
-  screenshot: ScreenshotSchema,
   context: SelectionContextSchema,
 });
 

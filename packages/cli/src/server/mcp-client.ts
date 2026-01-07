@@ -20,7 +20,6 @@ const WaitForSelectionParamsSchema = z.object({
 
 const GetSelectionHistoryParamsSchema = z.object({
   limit: z.number().optional().default(10),
-  includeScreenshots: z.boolean().optional().default(false),
 });
 
 /**
@@ -92,10 +91,6 @@ export class MCPClientServer {
               limit: {
                 type: 'number',
                 description: 'Maximum number of selections to return (default: 10)',
-              },
-              includeScreenshots: {
-                type: 'boolean',
-                description: 'Whether to include screenshot data (default: false)',
               },
             },
             required: [],
@@ -201,7 +196,7 @@ export class MCPClientServer {
     const params = GetSelectionHistoryParamsSchema.parse(args ?? {});
 
     try {
-      const history = await this.client.getHistory(params.limit, params.includeScreenshots);
+      const history = await this.client.getHistory(params.limit);
 
       return {
         content: [
@@ -250,7 +245,6 @@ export class MCPClientServer {
         },
       },
       context: selection.context,
-      hasScreenshot: selection.screenshot.dataUrl !== '[omitted]',
     };
   }
 

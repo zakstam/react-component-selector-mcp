@@ -6,10 +6,8 @@ import {
   formatFilePath,
   type Fiber,
 } from './sourceLocationResolver.js';
-import { captureScreenshot, type CaptureOptions } from './screenshotCapture.js';
 
 export interface MetadataOptions {
-  screenshotOptions?: CaptureOptions;
   /** The raw React fiber for enhanced source resolution */
   fiber?: Fiber | null;
 }
@@ -51,9 +49,6 @@ export async function buildSelectionData(
   };
   const source = await resolveSourceLocation(fiber, element);
 
-  // Capture screenshot
-  const screenshot = await captureScreenshot(element, options.screenshotOptions);
-
   // Build complete selection data
   const selectionData: SelectionData = {
     id: nanoid(),
@@ -67,7 +62,6 @@ export async function buildSelectionData(
     props: fiberData.props,
     state: fiberData.state,
     dom: extractDOMInfo(element),
-    screenshot,
     context: {
       pageUrl: window.location.href,
       parentComponents: fiberData.parentComponents,

@@ -36,10 +36,9 @@ export class DaemonClient {
     return (response as { selection: SelectionData | null }).selection;
   }
 
-  async getHistory(limit: number = 10, includeScreenshots: boolean = false): Promise<SelectionData[]> {
+  async getHistory(limit: number = 10): Promise<SelectionData[]> {
     const params = new URLSearchParams({
       limit: limit.toString(),
-      screenshots: includeScreenshots.toString(),
     });
     const response = await this.request('GET', `/selection/history?${params}`);
     return (response as { selections: SelectionData[] }).selections;

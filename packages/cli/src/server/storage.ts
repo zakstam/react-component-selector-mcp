@@ -50,20 +50,8 @@ export class SelectionStorage {
   /**
    * Get selection history
    */
-  getHistory(limit: number = 10, includeScreenshots: boolean = false): SelectionData[] {
-    const results = this.selections.slice(0, limit);
-
-    if (!includeScreenshots) {
-      return results.map((selection) => ({
-        ...selection,
-        screenshot: {
-          ...selection.screenshot,
-          dataUrl: '[omitted]',
-        },
-      }));
-    }
-
-    return results;
+  getHistory(limit: number = 10): SelectionData[] {
+    return this.selections.slice(0, limit);
   }
 
   /**

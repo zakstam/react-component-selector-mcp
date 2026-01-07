@@ -96,15 +96,9 @@ importers:
 
   packages/react:
     dependencies:
-      html-to-image:
-        specifier: ^1.11.11
-        version: 1.11.13
       nanoid:
         specifier: ^5.0.9
         version: 5.1.6
-      source-map-js:
-        specifier: ^1.2.1
-        version: 1.2.1
       zod:
         specifier: ^3.24.1
         version: 3.25.76
@@ -1193,9 +1187,6 @@ packages:
   hono@4.11.3:
     resolution: {integrity: sha512-PmQi306+M/ct/m5s66Hrg+adPnkD5jiO6IjA7WhWw0gSBSo1EcRegwuI1deZ+wd5pzCGynCcn2DprnE4/yEV4w==}
     engines: {node: '>=16.9.0'}
-
-  html-to-image@1.11.13:
-    resolution: {integrity: sha512-cuOPoI7WApyhBElTTb9oqsawRvZ0rHhaHwghRLlTuffoD1B2aDemlCruLeZrUIIdvG7gs9xeELEPm6PhuASqrg==}
 
   http-errors@2.0.1:
     resolution: {integrity: sha512-4FbRdAX+bSdmo4AUFuS0WNiPz8NgFt+r8ThgNWmlrjQjt1Q7ZR9+zTlce2859x4KSXrwIsaeTqDoKQmtP8pLmQ==}
@@ -2825,8 +2816,6 @@ snapshots:
       function-bind: 1.1.2
 
   hono@4.11.3: {}
-
-  html-to-image@1.11.13: {}
 
   http-errors@2.0.1:
     dependencies:

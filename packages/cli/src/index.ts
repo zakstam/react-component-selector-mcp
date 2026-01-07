@@ -23,7 +23,6 @@ export type {
   ComponentType,
   SourceLocation,
   DOMInfo,
-  Screenshot,
   SelectionContext,
   WebSocketMessage,
   MessageType,

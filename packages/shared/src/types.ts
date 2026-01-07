@@ -30,12 +30,6 @@ export interface DOMInfo {
   };
 }
 
-export interface Screenshot {
-  dataUrl: string;
-  width: number;
-  height: number;
-}
-
 export interface SelectionContext {
   pageUrl: string;
   parentComponents: string[];
@@ -49,7 +43,6 @@ export interface SelectionData {
   props: Record<string, unknown>;
   state: Record<string, unknown> | null;
   dom: DOMInfo;
-  screenshot: Screenshot;
   context: SelectionContext;
 }
 

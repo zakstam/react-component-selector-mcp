@@ -1,14 +1,12 @@
 /**
- * Multi-strategy source location resolver
+ * Source location resolver
  *
- * Attempts to resolve source file locations using three strategies:
+ * Attempts to resolve source file locations using two strategies:
  * 1. React's _debugSource (fastest, works with Babel-based builds)
- * 2. Source map resolution (works with any bundler in dev mode)
- * 3. Stack trace parsing (fallback, less accurate)
+ * 2. Stack trace parsing (fallback, less accurate)
  */
 
 import type { SourceLocation } from '@react-component-selector-mcp/shared';
-import { searchSourceMapsForComponent } from './sourceMapClient.js';
 import { parseStackTrace, filterInternalFrames } from './stackTraceParser.js';
 
 export interface DebugSource {
@@ -30,7 +28,7 @@ export interface Fiber {
  */
 export async function resolveSourceLocation(
   fiber: Fiber | null,
-  element?: HTMLElement
+  _element?: HTMLElement
 ): Promise<SourceLocation> {
   // Strategy 1: Try _debugSource first (fastest)
   const debugSourceResult = tryDebugSource(fiber);
@@ -38,13 +36,7 @@ export async function resolveSourceLocation(
     return debugSourceResult;
   }
 
-  // Strategy 2: Try source map resolution
-  const sourceMapResult = await trySourceMapResolution(fiber, element);
-  if (sourceMapResult?.filePath) {
-    return sourceMapResult;
-  }
-
-  // Strategy 3: Try stack trace parsing (fallback)
+  // Strategy 2: Try stack trace parsing (fallback)
   const stackResult = tryStackTraceParsing();
   if (stackResult?.filePath) {
     return stackResult;
@@ -63,13 +55,6 @@ export async function resolveSourceLocation(
  * This is set by @babel/plugin-transform-react-jsx-source
  */
 function tryDebugSource(fiber: Fiber | null): SourceLocation {
-  // Debug: log what's in the fiber
-  if (fiber) {
-    console.log('[component-picker] Fiber keys:', Object.keys(fiber));
-    console.log('[component-picker] _debugSource:', fiber._debugSource);
-    console.log('[component-picker] _debugInfo:', (fiber as Record<string, unknown>)._debugInfo);
-  }
-
   if (!fiber?._debugSource) {
     return { filePath: null, lineNumber: null, columnNumber: null };
   }
@@ -88,39 +73,7 @@ function tryDebugSource(fiber: Fiber | null): SourceLocation {
 }
 
 /**
- * Strategy 2: Resolve source via source maps
- * Uses component name to search source maps for the definition
- */
-async function trySourceMapResolution(
-  fiber: Fiber | null,
-  _element?: HTMLElement
-): Promise<SourceLocation | null> {
-  try {
-    // Get component name from fiber
-    const componentName = fiber?.type ? getComponentName(fiber.type) : null;
-    if (!componentName) {
-      return null;
-    }
-
-    // Search source maps for a file/definition matching this component name
-    const result = await searchSourceMapsForComponent(componentName);
-    if (!result) {
-      return null;
-    }
-
-    return {
-      filePath: formatFilePath(result.source),
-      lineNumber: result.line,
-      columnNumber: result.column,
-    };
-  } catch (error) {
-    console.debug('[component-picker] Source map resolution failed:', error);
-    return null;
-  }
-}
-
-/**
- * Strategy 3: Parse stack trace directly for source location
+ * Strategy 2: Parse stack trace directly for source location
  * Less accurate but works as a last resort
  */
 function tryStackTraceParsing(): SourceLocation | null {
@@ -149,27 +102,6 @@ function tryStackTraceParsing(): SourceLocation | null {
   } catch {
     return null;
   }
-}
-
-/**
- * Extract component name from fiber type
- */
-function getComponentName(type: unknown): string | null {
-  if (!type) return null;
-
-  if (typeof type === 'function') {
-    return (type as { displayName?: string; name?: string }).displayName ||
-      (type as { name?: string }).name ||
-      null;
-  }
-
-  if (typeof type === 'object' && type !== null) {
-    // Handle forwardRef, memo, etc.
-    const obj = type as { displayName?: string; render?: { displayName?: string; name?: string } };
-    return obj.displayName || obj.render?.displayName || obj.render?.name || null;
-  }
-
-  return null;
 }
 
 /**

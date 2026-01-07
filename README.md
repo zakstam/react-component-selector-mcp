@@ -14,7 +14,7 @@ npm install -g @react-component-selector-mcp/cli
 
 - **Visual Selection**: Press `Ctrl+Alt+C` (Windows/Linux) or `Cmd+Option+C` (Mac) to enter selection mode
 - **Component Detection**: Automatically identifies React components under your cursor
-- **Rich Metadata**: Captures component name, props, state, source location, and screenshot
+- **Rich Metadata**: Captures component name, props, state, and source location
 - **MCP Integration**: Exposes selection data to Claude Code for AI-assisted development
 
 ## LLM Setup Instructions
@@ -165,17 +165,16 @@ Once configured, Claude Code has access to these tools:
 
 When you select a component, the following data is captured:
 
-| Data                | Description                                            |
-| ------------------- | ------------------------------------------------------ |
-| **Component Name**  | The React component name                               |
-| **Component Type**  | function, class, memo, or forwardRef                   |
-| **Source Location** | File path and line number (when source maps available) |
-| **Props**           | Current prop values                                    |
-| **State**           | Current state values                                   |
-| **DOM Info**        | Tag name, classes, dimensions                          |
-| **Screenshot**      | Visual snapshot of the component                       |
-| **Hierarchy**       | Parent component chain                                 |
-| **Page URL**        | Current browser URL                                    |
+| Data                | Description                                     |
+| ------------------- | ----------------------------------------------- |
+| **Component Name**  | The React component name                        |
+| **Component Type**  | function, class, memo, or forwardRef            |
+| **Source Location** | File path and line number (via React devtools)  |
+| **Props**           | Current prop values                             |
+| **State**           | Current state values                            |
+| **DOM Info**        | Tag name, classes, dimensions                   |
+| **Hierarchy**       | Parent component chain                          |
+| **Page URL**        | Current browser URL                             |
 
 ## Troubleshooting
 
@@ -204,8 +203,12 @@ If you have multiple Claude Code instances and one fails:
 
 ### Source location not available
 
-- Ensure source maps are enabled in your build configuration
-- Development mode typically has better source map support
+Source locations require React's `_debugSource` which is added by `@babel/plugin-transform-react-jsx-source`. This is typically enabled automatically in development builds with:
+- Create React App
+- Next.js
+- Vite with `@vitejs/plugin-react`
+
+If source locations are missing, ensure you're running in development mode.
 
 ### Selection mode not activating
 
