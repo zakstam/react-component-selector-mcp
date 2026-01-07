@@ -247,9 +247,9 @@ function App() {
 # Terminal 1: Start your app
 pnpm dev
 
-# Terminal 2: Install and start CLI/MCP server
-pnpm add -g @react-component-selector-mcp/cli
-react-component-selector-mcp start --port 3333
+# Configure MCP in Claude Code (see README for full setup)
+# Or run CLI directly:
+npx @react-component-selector-mcp/cli mcp --port 3333
 
 # In browser: Press Ctrl+Alt+C (or Cmd+Option+C on Mac), click a component
 # Claude Code can now use get_selected_component tool
@@ -261,4 +261,4 @@ react-component-selector-mcp start --port 3333
 - Dev-only exports: `packages/debug-nextjs/src/index.ts`
 
 ## Project Location
-**To be created at**: `D:\react-component-selector-mcp\` (standalone repo)
+**Repository**: https://github.com/zakstam/react-component-selector-mcp

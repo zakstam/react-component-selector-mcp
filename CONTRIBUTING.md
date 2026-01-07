@@ -145,56 +145,44 @@ Open a pull request on GitHub with a clear description of your changes.
 
 ## Releasing
 
-### Release Commands
+Releases are automated via GitHub Actions using npm OIDC Trusted Publishing.
 
-We provide convenient scripts for the release process:
+### For Contributors
+
+After making changes, create a changeset:
+
+```bash
+pnpm release:prepare
+```
+
+This creates a changeset file describing your changes. Commit it with your PR.
+
+### Automated Release Process
+
+When changesets are merged to `main`:
+
+1. GitHub Actions creates a "Version Packages" PR with version bumps
+2. When that PR is merged, packages are automatically published to npm
+
+### Manual Release (Maintainers)
+
+If you need to release manually:
+
+```bash
+npm login                    # Authenticate (opens browser)
+pnpm release:version         # Bump versions
+cd packages/cli && npm publish --access public
+cd ../react && npm publish --access public
+```
+
+### Release Scripts Reference
 
 | Command | Description |
 |---------|-------------|
-| `pnpm release:check` | Run typecheck and build to verify everything is ready |
 | `pnpm release:prepare` | Create a changeset (interactive) |
 | `pnpm release:status` | Check status of pending changesets |
-| `pnpm release:version` | Bump versions based on changesets and generate CHANGELOG |
-| `pnpm release:publish` | Build and publish packages to npm |
-| `pnpm release:full` | Run check, version bump, and publish in sequence |
-
-### Release Workflow
-
-**For maintainers releasing to npm:**
-
-1. **Check readiness:**
-   ```bash
-   pnpm release:check
-   ```
-
-2. **Review pending changesets:**
-   ```bash
-   pnpm release:status
-   ```
-
-3. **Bump versions:**
-   ```bash
-   pnpm release:version
-   ```
-   This will:
-   - Update package versions based on changesets
-   - Generate/update CHANGELOG.md
-   - Commit the changes
-
-4. **Publish to npm:**
-   ```bash
-   pnpm release:publish
-   ```
-   This will:
-   - Build all packages
-   - Publish to npm (requires npm login)
-
-**Or use the all-in-one command:**
-```bash
-pnpm release:full
-```
-
-> **Note**: Make sure you're logged into npm (`npm login`) and have access to the `@react-component-selector-mcp` organization before publishing.
+| `pnpm release:version` | Bump versions and generate CHANGELOG |
+| `pnpm release:check` | Run typecheck and build |
 
 ## Code Style
 
