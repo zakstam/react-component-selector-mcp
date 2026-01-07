@@ -15,6 +15,7 @@
     "release:prepare": "changeset",
     "release:version": "changeset version",
     "release:publish": "changeset publish",
+    "release:publish-oidc": "bash scripts/publish-oidc.sh",
     "release:status": "changeset status",
     "release:full": "pnpm release:check && pnpm release:version && pnpm release:publish"
   },
