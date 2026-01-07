@@ -47,6 +47,8 @@ export async function captureScreenshot(
         margin: '0',
         padding: '0',
       },
+      // Skip font embedding to avoid errors with undefined font properties
+      skipFonts: true,
       filter: (node) => {
         // Skip our overlay elements
         if (node instanceof Element) {
