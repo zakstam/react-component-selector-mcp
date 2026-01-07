@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "react-component-selector-mcp": {
+      "command": "node",
+      "args": [
+        "D:\\react-component-selector-mcp\\packages\\cli\\dist\\cli.js",
+        "mcp",
+        "--port",
+        "3333"
+      ]
+    }
+  }
+}

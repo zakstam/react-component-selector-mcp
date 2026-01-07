@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "react-component-selector-mcp": {
+      "command": "node",
+      "args": ["D:\\component-picker\\packages\\cli\\dist\\cli.js", "mcp"]
+    }
+  }
+}

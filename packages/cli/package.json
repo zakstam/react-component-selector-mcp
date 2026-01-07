@@ -1,0 +1,62 @@
+{
+  "name": "@react-component-selector-mcp/cli",
+  "version": "0.0.1",
+  "description": "CLI and MCP server for react-component-selector-mcp",
+  "license": "MIT",
+  "author": "zakstam",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zakstam/react-component-selector-mcp.git",
+    "directory": "packages/cli"
+  },
+  "homepage": "https://github.com/zakstam/react-component-selector-mcp",
+  "bugs": "https://github.com/zakstam/react-component-selector-mcp/issues",
+  "keywords": [
+    "react",
+    "component",
+    "selector",
+    "mcp",
+    "claude",
+    "model-context-protocol"
+  ],
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "bin": {
+    "react-component-selector-mcp": "./dist/cli.js"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "start": "node dist/cli.js",
+    "typecheck": "tsc --noEmit",
+    "clean": "rimraf dist"
+  },
+  "dependencies": {
+    "@react-component-selector-mcp/shared": "workspace:*",
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "commander": "^12.1.0",
+    "nanoid": "^5.0.9",
+    "ws": "^8.18.0",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "@types/ws": "^8.5.13",
+    "rimraf": "^6.0.1",
+    "tsup": "^8.3.5",
+    "typescript": "^5.7.2"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

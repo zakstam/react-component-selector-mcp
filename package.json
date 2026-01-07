@@ -1,0 +1,26 @@
+{
+  "name": "react-component-selector-mcp-monorepo",
+  "private": true,
+  "packageManager": "pnpm@9.15.0",
+  "scripts": {
+    "build": "pnpm -r build",
+    "dev": "pnpm -r --parallel dev",
+    "lint": "pnpm -r lint",
+    "typecheck": "pnpm -r typecheck",
+    "clean": "pnpm -r clean",
+    "changeset": "changeset",
+    "version": "changeset version",
+    "release": "pnpm build && changeset publish",
+    "release:check": "pnpm typecheck && pnpm build",
+    "release:prepare": "changeset",
+    "release:version": "changeset version",
+    "release:publish": "pnpm build && changeset publish",
+    "release:status": "changeset status",
+    "release:full": "pnpm release:check && pnpm release:version && pnpm release:publish"
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.27.1",
+    "typescript": "^5.7.2",
+    "ws": "^8.18.0"
+  }
+}
