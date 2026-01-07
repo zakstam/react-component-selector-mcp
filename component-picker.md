@@ -9,13 +9,15 @@ A standalone tool for selecting React components in the browser and exposing tha
 
 ## Architecture
 
+The system uses a **daemon architecture** that enables multiple Claude Code instances to share selections:
+
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │  Any React/Next.js App                                      │
 │  ┌─────────────────────────────────────────────────────┐   │
-│  │  <ComponentSelector>                                 │   │
+│  │  <ComponentPicker>                                   │   │
 │  │    <App />                                          │   │
-│  │  </ComponentSelector>                               │   │
+│  │  </ComponentPicker>                                 │   │
 │  │                                                     │   │
 │  │  • Ctrl+Alt+C / Cmd+Option+C → selection mode        │   │
 │  │  • Click component → capture data                   │   │
@@ -25,14 +27,25 @@ A standalone tool for selecting React components in the browser and exposing tha
                             │ WebSocket (port 3333)
                             ▼
 ┌─────────────────────────────────────────────────────────────┐
-│  CLI / MCP Server                                           │
+│  Daemon Server (single shared instance)                     │
 │  • Receives selections from browser                         │
-│  • Exposes MCP tools to Claude Code                        │
+│  • Stores selection history (in-memory)                     │
+│  • HTTP API for MCP clients (port 3334)                     │
 └─────────────────────────────────────────────────────────────┘
-                            │ MCP Protocol
-                            ▼
-                      Claude Code
+                            │ HTTP API (port 3334)
+            ┌───────────────┼───────────────┐
+            ▼               ▼               ▼
+┌───────────────┐   ┌───────────────┐   ┌───────────────┐
+│ MCP Client #1 │   │ MCP Client #2 │   │ MCP Client #N │
+│ (Claude #1)   │   │ (Claude #2)   │   │ (Claude #N)   │
+└───────────────┘   └───────────────┘   └───────────────┘
 ```
+
+### Daemon Behavior
+- **Auto-start**: First `mcp` command starts the daemon automatically
+- **Shared state**: All MCP clients share the same selection storage
+- **PID file**: Located at `~/.react-component-selector-mcp/daemon.pid`
+- **Persistence**: Daemon runs until explicitly stopped or system restart
 
 ## Key Decisions
 
@@ -249,10 +262,29 @@ pnpm dev
 
 # Configure MCP in Claude Code (see README for full setup)
 # Or run CLI directly:
-npx @react-component-selector-mcp/cli mcp --port 3333
+npx @react-component-selector-mcp/cli mcp
 
 # In browser: Press Ctrl+Alt+C (or Cmd+Option+C on Mac), click a component
 # Claude Code can now use get_selected_component tool
+```
+
+### CLI Commands
+
+```bash
+# Start MCP server (auto-starts daemon)
+npx @react-component-selector-mcp/cli mcp
+
+# Check daemon status
+npx @react-component-selector-mcp/cli status
+
+# Stop daemon
+npx @react-component-selector-mcp/cli stop
+
+# Run daemon directly (for debugging)
+npx @react-component-selector-mcp/cli daemon
+
+# Custom ports
+npx @react-component-selector-mcp/cli mcp --ws-port 4444 --api-port 4445
 ```
 
 ## Reference Patterns (from agentic-coding repo)

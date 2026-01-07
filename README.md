@@ -49,7 +49,7 @@ STEPS:
      "mcpServers": {
        "react-component-selector": {
          "command": "npx",
-         "args": ["@react-component-selector-mcp/cli", "mcp", "--port", "3333"]
+         "args": ["@react-component-selector-mcp/cli", "mcp"]
        }
      }
    }
@@ -114,7 +114,7 @@ Add the MCP server configuration to Claude Code.
   "mcpServers": {
     "react-component-selector": {
       "command": "npx",
-      "args": ["@react-component-selector-mcp/cli", "mcp", "--port", "3333"]
+      "args": ["@react-component-selector-mcp/cli", "mcp"]
     }
   }
 }
@@ -127,13 +127,13 @@ Add the MCP server configuration to Claude Code.
   "mcpServers": {
     "react-component-selector": {
       "command": "npx",
-      "args": ["@react-component-selector-mcp/cli", "mcp", "--port", "3333"]
+      "args": ["@react-component-selector-mcp/cli", "mcp"]
     }
   }
 }
 ```
 
-> **Note**: The port number must match between the React component and CLI configuration.
+> **Note**: The CLI uses default ports (WebSocket: 3333, API: 3334). To customize, use `--ws-port` and `--api-port` flags. The WebSocket port must match the `port` prop on `ComponentPicker`.
 
 ## Usage
 
@@ -187,9 +187,20 @@ When you select a component, the following data is captured:
 
 ### MCP connection failed
 
-- Ensure the CLI is installed: `npx @react-component-selector-mcp/cli --version`
-- Check that port 3333 (or your chosen port) is not in use
-- Restart Claude Code after changing MCP configuration
+- **Check daemon status**: Run `npx @react-component-selector-mcp/cli status`
+- **Restart daemon**: Run `npx @react-component-selector-mcp/cli stop` then restart Claude Code
+- **Port conflict**: Ensure ports 3333 and 3334 are not in use by other applications
+- **Wrong flags**: Use `--ws-port` and `--api-port`, not `--port` (which is deprecated)
+- **Restart Claude Code** after changing MCP configuration
+
+### Second Claude instance fails to connect
+
+If you have multiple Claude Code instances and one fails:
+
+1. Check if daemon is running: `npx @react-component-selector-mcp/cli status`
+2. If not running, the first instance may have crashed - restart it
+3. Ensure all instances use the same port configuration
+4. Try stopping and restarting: `npx @react-component-selector-mcp/cli stop`
 
 ### Source location not available
 
@@ -202,12 +213,92 @@ When you select a component, the following data is captured:
 - Ensure the keyboard shortcut isn't captured by another extension
 - Try clicking in the page first to ensure it has focus
 
-## Standalone CLI Mode
+## Architecture
 
-Run the WebSocket server without MCP integration:
+The MCP server uses a **daemon architecture** that enables multiple Claude Code instances to share component selections:
+
+```
+┌─────────────────┐     ┌─────────────────┐
+│  Claude #1      │     │  Claude #2      │
+│  (MCP Client)   │     │  (MCP Client)   │
+└────────┬────────┘     └────────┬────────┘
+         │                       │
+         └───────────┬───────────┘
+                     │ HTTP API (port 3334)
+              ┌──────▼──────┐
+              │   Daemon    │  ← Single shared instance
+              │  (Storage)  │
+              └──────┬──────┘
+                     │ WebSocket (port 3333)
+              ┌──────▼──────┐
+              │   Browser   │
+              │  (React)    │
+              └─────────────┘
+```
+
+### How It Works
+
+1. **First Claude instance** runs `mcp` command → starts the daemon automatically
+2. **Additional Claude instances** detect the running daemon and connect to it
+3. **All instances share** the same selection history and receive the same selections
+4. **Daemon persists** until explicitly stopped or system restart
+
+### Multiple Claude Instances
+
+When you have multiple Claude Code instances open:
+
+- All instances see the **same** `get_selected_component` result
+- All instances share the **same** `get_selection_history`
+- If multiple instances call `wait_for_selection`, **all receive** the next selection
+
+This is useful when working on the same project in multiple terminals.
+
+## CLI Commands
+
+### Start MCP Server (Recommended)
 
 ```bash
-npx @react-component-selector-mcp/cli start --port 3333
+npx @react-component-selector-mcp/cli mcp
+```
+
+This auto-starts the daemon if needed and connects Claude Code to it.
+
+### Check Status
+
+```bash
+npx @react-component-selector-mcp/cli status
+```
+
+Shows daemon status, connected browsers, and selection count.
+
+### Stop Daemon
+
+```bash
+npx @react-component-selector-mcp/cli stop
+```
+
+### Run Daemon Directly
+
+For debugging or manual control:
+
+```bash
+npx @react-component-selector-mcp/cli daemon
+```
+
+### Custom Ports
+
+```bash
+# MCP with custom ports
+npx @react-component-selector-mcp/cli mcp --ws-port 4444 --api-port 4445
+
+# Daemon with custom ports
+npx @react-component-selector-mcp/cli daemon --ws-port 4444 --api-port 4445
+```
+
+Remember to update `ComponentPicker` to match:
+
+```tsx
+<ComponentPicker port={4444}>{children}</ComponentPicker>
 ```
 
 ## Contributing
