@@ -56,7 +56,7 @@ export class MCPServer {
         {
           name: 'get_selected_component',
           description:
-            'Returns the most recently selected React component. Use after user has made a selection in the browser using Cmd+Shift+S.',
+            'Returns the most recently selected React component. Use after user has made a selection in the browser using Ctrl+Alt+C.',
           inputSchema: {
             type: 'object',
             properties: {},
@@ -134,7 +134,7 @@ export class MCPServer {
             type: 'text',
             text: JSON.stringify({
               error: 'No component selected yet',
-              hint: 'User should press Cmd+Shift+S in the browser and click a component',
+              hint: 'User should press Ctrl+Alt+C in the browser and click a component',
             }),
           },
         ],

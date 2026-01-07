@@ -17,7 +17,7 @@ A standalone tool for selecting React components in the browser and exposing tha
 │  │    <App />                                          │   │
 │  │  </ComponentSelector>                               │   │
 │  │                                                     │   │
-│  │  • Cmd+Shift+S → selection mode                     │   │
+│  │  • Ctrl+Alt+C / Cmd+Option+C → selection mode        │   │
 │  │  • Click component → capture data                   │   │
 │  │  • Connects via WebSocket                           │   │
 │  └─────────────────────────────────────────────────────┘   │
@@ -39,7 +39,7 @@ A standalone tool for selecting React components in the browser and exposing tha
 | Decision | Choice |
 |----------|--------|
 | Injection method | Manual wrapper: `<ComponentSelector><App/></ComponentSelector>` |
-| Selection trigger | Keyboard shortcut: Cmd+Shift+S (Mac) / Ctrl+Shift+S (Win) |
+| Selection trigger | Keyboard shortcut: Cmd+Option+C (Mac) / Ctrl+Alt+C (Win) |
 | Communication | WebSocket server started by CLI |
 | AI Integration | MCP server for Claude Code |
 
@@ -251,7 +251,7 @@ pnpm dev
 pnpm add -g @react-component-selector-mcp/cli
 react-component-selector-mcp start --port 3333
 
-# In browser: Press Cmd+Shift+S, click a component
+# In browser: Press Ctrl+Alt+C (or Cmd+Option+C on Mac), click a component
 # Claude Code can now use get_selected_component tool
 ```
 

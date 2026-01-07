@@ -12,7 +12,7 @@ npm install -g @react-component-selector-mcp/cli
 
 ## What It Does
 
-- **Visual Selection**: Press `Ctrl+Shift+S` (Windows/Linux) or `Cmd+Shift+S` (Mac) to enter selection mode
+- **Visual Selection**: Press `Ctrl+Alt+C` (Windows/Linux) or `Cmd+Option+C` (Mac) to enter selection mode
 - **Component Detection**: Automatically identifies React components under your cursor
 - **Rich Metadata**: Captures component name, props, state, source location, and screenshot
 - **MCP Integration**: Exposes selection data to Claude Code for AI-assisted development
@@ -57,7 +57,7 @@ STEPS:
 4. VERIFY SETUP
    - Start the dev server (npm run dev or equivalent)
    - Open browser to the app
-   - Press Ctrl+Shift+S (Windows/Linux) or Cmd+Shift+S (Mac)
+   - Press Ctrl+Alt+C (Windows/Linux) or Cmd+Option+C (Mac)
    - A selection overlay should appear
 
 DONE. The MCP tools get_selected_component, wait_for_selection, and get_selection_history are now available.
@@ -141,7 +141,7 @@ Add the MCP server configuration to Claude Code.
 
 1. Start your React development server
 2. Open your app in the browser
-3. Press **Ctrl+Shift+S** (Windows/Linux) or **Cmd+Shift+S** (Mac)
+3. Press **Ctrl+Alt+C** (Windows/Linux) or **Cmd+Option+C** (Mac)
 4. Click on any component to select it
 5. The selection data is now available to Claude Code
 
