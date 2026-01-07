@@ -1,6 +1,6 @@
-# @react-component-selector-mcp/react
+# @react-component-selector-mcp/shared
 
-## 2.0.0
+## 1.0.0
 
 ### Major Changes
 
@@ -23,15 +23,3 @@
 
   If you were using the `screenshot` field from `SelectionData`, it is no longer available.
   If you were passing `includeScreenshots` to `get_selection_history`, remove that parameter.
-
-## 1.1.0
-
-### Minor Changes
-
-- 78bb384: Fixed an issue with web fonts and updated the documentation
-
-## 1.0.0
-
-### Major Changes
-
-- Initial Release
