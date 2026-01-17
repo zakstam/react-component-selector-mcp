@@ -2,7 +2,6 @@ import React, { useEffect, useState, useCallback, useRef } from 'react';
 
 export interface SelectionOverlayProps {
   enabled: boolean;
-  message?: string;
   onSelect: (element: HTMLElement) => void;
   onCancel: () => void;
 }
@@ -20,7 +19,6 @@ interface HighlightRect {
  */
 export function SelectionOverlay({
   enabled,
-  message,
   onSelect,
   onCancel,
 }: SelectionOverlayProps): React.ReactElement | null {
@@ -221,33 +219,6 @@ export function SelectionOverlay({
         </div>
       )}
 
-      {/* Info bar at top */}
-      <div
-        data-component-picker="info-bar"
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          padding: '12px 16px',
-          backgroundColor: '#3b82f6',
-          color: 'white',
-          fontFamily: 'system-ui, sans-serif',
-          fontSize: '14px',
-          textAlign: 'center',
-          zIndex: 999999,
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          gap: '16px',
-          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
-        }}
-      >
-        <span style={{ fontWeight: 500 }}>
-          {message || 'Click a component to select it'}
-        </span>
-        <span style={{ opacity: 0.8, fontSize: '12px' }}>Press ESC to cancel</span>
-      </div>
     </>
   );
 }

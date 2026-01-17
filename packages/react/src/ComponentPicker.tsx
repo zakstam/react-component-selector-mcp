@@ -133,7 +133,6 @@ function ComponentPickerImpl({
       {children}
       <SelectionOverlay
         enabled={isSelectionMode}
-        message={selectionMessage}
         onSelect={handleSelect}
         onCancel={disableSelectionMode}
       />
@@ -157,7 +156,7 @@ function ComponentPickerImpl({
             backgroundColor: !connected
               ? '#ef4444'
               : isSelectionMode
-                ? '#f59e0b'
+                ? '#3b82f6'
                 : '#22c55e',
             color: 'white',
             borderRadius: '9999px',
@@ -181,13 +180,18 @@ function ComponentPickerImpl({
               height: 8,
               borderRadius: '50%',
               backgroundColor: 'white',
-              animation: !connected ? 'pulse 2s infinite' : 'none',
+              animation: !connected ? 'pulse 2s infinite' : isSelectionMode ? 'pulse 1s infinite' : 'none',
             }}
           />
           {!connected
             ? 'Connecting...'
             : isSelectionMode
-              ? 'Click a Component'
+              ? (
+                <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <span>{selectionMessage || 'Click a component'}</span>
+                  <span style={{ opacity: 0.7, fontSize: '10px' }}>ESC to cancel</span>
+                </span>
+              )
               : 'Select Component'}
         </button>
       )}
