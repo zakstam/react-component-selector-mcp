@@ -1,5 +1,11 @@
 # @react-component-selector-mcp/cli
 
+## 2.0.1
+
+### Patch Changes
+
+- 5702227: Add README to npm package
+
 ## 2.0.0
 
 ### Major Changes
