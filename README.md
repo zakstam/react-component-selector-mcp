@@ -4,7 +4,7 @@
 
 Select React components visually in the browser and expose selection data to Claude Code via [MCP](https://modelcontextprotocol.io/).
 
-![Claude Code showing selected component details](screenshots/Screenshot-1.png)
+![Claude Code showing selected component details](https://raw.githubusercontent.com/zakstam/react-component-selector-mcp/main/screenshots/Screenshot-1.png)
 
 ## Quick Start
 
