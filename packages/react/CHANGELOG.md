@@ -1,5 +1,11 @@
 # @react-component-selector-mcp/react
 
+## 2.0.3
+
+### Patch Changes
+
+- fba2c07: Update README with screenshot and Claude Code setup prompt
+
 ## 2.0.2
 
 ### Patch Changes
