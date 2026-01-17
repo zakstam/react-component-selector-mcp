@@ -33,6 +33,8 @@ export function useWebSocketClient(
   const reconnectTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const pingIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const isCleaningUpRef = useRef(false);
+  // Track if we've ever successfully connected (to suppress initial connection errors)
+  const hasConnectedRef = useRef(false);
 
   const [connected, setConnected] = useState(false);
   const [clientId, setClientId] = useState<string | null>(null);
@@ -55,6 +57,10 @@ export function useWebSocketClient(
       return;
     }
 
+    // Small delay to handle React Strict Mode double-invoke
+    // This prevents "WebSocket closed before connection established" errors
+    let connectTimeoutId: ReturnType<typeof setTimeout> | null = null;
+
     const connect = () => {
       if (wsRef.current?.readyState === WebSocket.OPEN || isCleaningUpRef.current) {
         return;
@@ -62,12 +68,16 @@ export function useWebSocketClient(
 
       try {
         const ws = new WebSocket(`ws://localhost:${port}`);
+        // Track whether this specific connection was intentionally closed during cleanup
+        let wasIntentionallyClosed = false;
 
         ws.onopen = () => {
           if (isCleaningUpRef.current) {
+            wasIntentionallyClosed = true;
             ws.close();
             return;
           }
+          hasConnectedRef.current = true;
           console.log('[component-picker] Connected to server');
           setConnected(true);
           onConnectionChangeRef.current?.(true);
@@ -81,7 +91,10 @@ export function useWebSocketClient(
         };
 
         ws.onclose = () => {
-          console.log('[component-picker] Disconnected from server');
+          // Only log disconnection if we were previously connected (not during initial failed attempts)
+          if (hasConnectedRef.current && !wasIntentionallyClosed && !isCleaningUpRef.current) {
+            console.log('[component-picker] Disconnected from server');
+          }
           setConnected(false);
           setClientId(null);
           onConnectionChangeRef.current?.(false);
@@ -100,8 +113,8 @@ export function useWebSocketClient(
         };
 
         ws.onerror = () => {
-          // Error is logged but we don't need to do anything special
-          // onclose will be called after onerror
+          // Silently handle errors - the UI shows connection status
+          // onclose will be called after onerror for reconnection
         };
 
         ws.onmessage = (event: MessageEvent) => {
@@ -142,8 +155,7 @@ export function useWebSocketClient(
 
         wsRef.current = ws;
       } catch (error) {
-        console.error('[component-picker] Failed to connect:', error);
-
+        // Silently handle initial connection errors - UI shows status
         // Retry connection if not cleaning up
         if (!isCleaningUpRef.current) {
           reconnectTimeoutRef.current = setTimeout(() => {
@@ -153,10 +165,23 @@ export function useWebSocketClient(
       }
     };
 
-    connect();
+    // Delay initial connection to handle React Strict Mode
+    // In Strict Mode, effects run twice quickly - the delay allows cleanup to run before connection starts
+    connectTimeoutId = setTimeout(() => {
+      connectTimeoutId = null;
+      if (!isCleaningUpRef.current) {
+        connect();
+      }
+    }, 100);
 
     return () => {
       isCleaningUpRef.current = true;
+
+      // Clear the initial connection timeout
+      if (connectTimeoutId) {
+        clearTimeout(connectTimeoutId);
+        connectTimeoutId = null;
+      }
 
       if (reconnectTimeoutRef.current) {
         clearTimeout(reconnectTimeoutRef.current);
@@ -167,7 +192,11 @@ export function useWebSocketClient(
         pingIntervalRef.current = null;
       }
       if (wsRef.current) {
-        wsRef.current.close();
+        // Only close if not already closed/closing
+        if (wsRef.current.readyState === WebSocket.OPEN ||
+            wsRef.current.readyState === WebSocket.CONNECTING) {
+          wsRef.current.close();
+        }
         wsRef.current = null;
       }
     };
