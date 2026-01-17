@@ -5,6 +5,9 @@ node_modules/
 dist/
 *.tsbuildinfo
 
+# Generated README files (copied from root during build)
+packages/*/README.md
+
 # Next.js
 .next/
 out/

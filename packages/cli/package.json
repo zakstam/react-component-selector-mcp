@@ -20,7 +20,8 @@
     "model-context-protocol"
   ],
   "files": [
-    "dist"
+    "dist",
+    "README.md"
   ],
   "type": "module",
   "bin": {

@@ -40,6 +40,17 @@ Create `.mcp.json` in your project root:
 
 Restart Claude Code to load the MCP server.
 
+### Claude Code Setup
+
+Copy this prompt to Claude Code to automate the setup:
+
+```
+Set up react-component-selector-mcp in this project:
+1. Install @react-component-selector-mcp/react
+2. Wrap the root layout with <ComponentPicker>{children}</ComponentPicker>
+3. Create .mcp.json with: {"mcpServers":{"react-component-selector":{"command":"npx","args":["@react-component-selector-mcp/cli","mcp"]}}}
+```
+
 ## Usage
 
 1. Start your dev server and open the app in browser
