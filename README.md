@@ -1,5 +1,7 @@
 # React Component Selector MCP
 
+[![npm](https://img.shields.io/npm/v/@react-component-selector-mcp/react)](https://www.npmjs.com/package/@react-component-selector-mcp/react)
+
 Select React components visually in the browser and expose selection data to Claude Code via [MCP](https://modelcontextprotocol.io/).
 
 ## Quick Start
