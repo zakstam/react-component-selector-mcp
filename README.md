@@ -4,6 +4,8 @@
 
 Select React components visually in the browser and expose selection data to Claude Code via [MCP](https://modelcontextprotocol.io/).
 
+![Claude Code showing selected component details](screenshots/Screenshot-1.png)
+
 ## Quick Start
 
 ### 1. Install
