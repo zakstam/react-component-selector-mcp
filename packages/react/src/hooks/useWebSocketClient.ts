@@ -35,6 +35,9 @@ export function useWebSocketClient(
   const isCleaningUpRef = useRef(false);
   // Track if we've ever successfully connected (to suppress initial connection errors)
   const hasConnectedRef = useRef(false);
+  // Exponential backoff for reconnection
+  const reconnectDelayRef = useRef(1000);
+  const MAX_RECONNECT_DELAY = 30000;
 
   const [connected, setConnected] = useState(false);
   const [clientId, setClientId] = useState<string | null>(null);
@@ -93,6 +96,7 @@ export function useWebSocketClient(
             return;
           }
           hasConnectedRef.current = true;
+          reconnectDelayRef.current = 1000; // Reset backoff on successful connection
           console.log('[component-picker] Connected to server');
           setConnected(true);
           onConnectionChangeRef.current?.(true);
@@ -124,15 +128,17 @@ export function useWebSocketClient(
 
           // Only attempt reconnection if not cleaning up
           if (!isCleaningUpRef.current) {
+            const delay = reconnectDelayRef.current;
+            reconnectDelayRef.current = Math.min(delay * 2, MAX_RECONNECT_DELAY);
             reconnectTimeoutRef.current = setTimeout(() => {
               connect();
-            }, 3000);
+            }, delay);
           }
         };
 
         ws.onerror = () => {
-          // Silently handle errors - the UI shows connection status
-          // onclose will be called after onerror for reconnection
+          // Log a friendly warning instead of letting the browser error speak for itself
+          console.warn(`[component-picker] Server not available at ws://localhost:${port}, retrying in ${Math.round(reconnectDelayRef.current / 1000)}s...`);
         };
 
         ws.onmessage = (event: MessageEvent) => {
@@ -172,13 +178,14 @@ export function useWebSocketClient(
         };
 
         wsRef.current = ws;
-      } catch (error) {
-        // Silently handle initial connection errors - UI shows status
-        // Retry connection if not cleaning up
+      } catch {
+        // Retry connection with backoff if not cleaning up
         if (!isCleaningUpRef.current) {
+          const delay = reconnectDelayRef.current;
+          reconnectDelayRef.current = Math.min(delay * 2, MAX_RECONNECT_DELAY);
           reconnectTimeoutRef.current = setTimeout(() => {
             connect();
-          }, 3000);
+          }, delay);
         }
       }
     };
