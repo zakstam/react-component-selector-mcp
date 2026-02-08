@@ -1,5 +1,11 @@
 # @react-component-selector-mcp/react
 
+## 2.1.2
+
+### Patch Changes
+
+- 5ff6146: Use exponential backoff for WebSocket reconnection (1s to 30s) to reduce console noise when the server is unavailable. Log a friendly warning on connection failure instead of failing silently.
+
 ## 2.1.1
 
 ### Patch Changes
