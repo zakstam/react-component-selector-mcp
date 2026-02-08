@@ -1,4 +1,4 @@
-import React, { useCallback, type ReactNode } from 'react';
+import React, { useCallback, useState, useRef, type ReactNode } from 'react';
 import { useWebSocketClient } from './hooks/useWebSocketClient.js';
 import { useKeyboardShortcut } from './hooks/useKeyboardShortcut.js';
 import { useSelectionMode } from './hooks/useSelectionMode.js';
@@ -44,6 +44,9 @@ function ComponentPickerImpl({
 }: ComponentPickerProps): React.ReactElement {
   const { isSelectionMode, selectionMessage, enableSelectionMode, disableSelectionMode } =
     useSelectionMode();
+
+  const [copiedMessage, setCopiedMessage] = useState<string | null>(null);
+  const copiedTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const { getFiberFromElement, extractFiberData, findNearestComponentFiber } = useFiberInspector();
 
@@ -103,6 +106,16 @@ function ComponentPickerImpl({
         // Send to server
         sendSelection(selectionData);
 
+        // Copy to clipboard
+        try {
+          await navigator.clipboard.writeText(JSON.stringify(selectionData, null, 2));
+          if (copiedTimeoutRef.current) clearTimeout(copiedTimeoutRef.current);
+          setCopiedMessage(`Copied ${selectionData.component.name}`);
+          copiedTimeoutRef.current = setTimeout(() => setCopiedMessage(null), 2000);
+        } catch {
+          console.warn('[component-picker] Failed to copy selection data to clipboard');
+        }
+
         // Notify callback
         onSelect?.(selectionData.component.name, selectionData.source.filePath);
 
@@ -152,9 +165,11 @@ function ComponentPickerImpl({
             bottom: 16,
             right: 16,
             padding: '8px 12px',
-            backgroundColor: isSelectionMode
-              ? '#3b82f6'
-              : '#22c55e',
+            backgroundColor: copiedMessage
+              ? '#8b5cf6'
+              : isSelectionMode
+                ? '#3b82f6'
+                : '#22c55e',
             color: 'white',
             borderRadius: '9999px',
             fontSize: '12px',
@@ -180,14 +195,16 @@ function ComponentPickerImpl({
               animation: isSelectionMode ? 'pulse 1s infinite' : !connected ? 'pulse 2s infinite' : 'none',
             }}
           />
-          {isSelectionMode
-            ? (
-              <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span>{selectionMessage || 'Click a component'}</span>
-                <span style={{ opacity: 0.7, fontSize: '10px' }}>ESC to cancel</span>
-              </span>
-            )
-            : 'Select Component'}
+          {copiedMessage
+            ? copiedMessage
+            : isSelectionMode
+              ? (
+                <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <span>{selectionMessage || 'Click a component'}</span>
+                  <span style={{ opacity: 0.7, fontSize: '10px' }}>ESC to cancel</span>
+                </span>
+              )
+              : 'Select Component'}
         </button>
       )}
     </>
