@@ -1,5 +1,11 @@
 # @react-component-selector-mcp/react
 
+## 2.1.1
+
+### Patch Changes
+
+- eb680aa: Copy selection data to clipboard when a component is selected, with a temporary confirmation message in the status button.
+
 ## 2.1.0
 
 ### Minor Changes
