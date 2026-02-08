@@ -39,12 +39,27 @@ export function useWebSocketClient(
   const [connected, setConnected] = useState(false);
   const [clientId, setClientId] = useState<string | null>(null);
 
+  // Queue for selections made while disconnected
+  const pendingSelectionsRef = useRef<SelectionData[]>([]);
+
+  const flushPendingSelections = useCallback(() => {
+    if (wsRef.current?.readyState === WebSocket.OPEN && pendingSelectionsRef.current.length > 0) {
+      const pending = pendingSelectionsRef.current.splice(0);
+      for (const data of pending) {
+        const message = createMessage('selection', data);
+        wsRef.current.send(JSON.stringify(message));
+      }
+      console.log(`[component-picker] Flushed ${pending.length} queued selection(s)`);
+    }
+  }, []);
+
   const sendSelection = useCallback((data: SelectionData) => {
     if (wsRef.current?.readyState === WebSocket.OPEN) {
       const message = createMessage('selection', data);
       wsRef.current.send(JSON.stringify(message));
     } else {
-      console.warn('[component-picker] Cannot send selection - not connected');
+      pendingSelectionsRef.current.push(data);
+      console.log('[component-picker] Selection queued (will send when connected)');
     }
   }, []);
 
@@ -81,6 +96,9 @@ export function useWebSocketClient(
           console.log('[component-picker] Connected to server');
           setConnected(true);
           onConnectionChangeRef.current?.(true);
+
+          // Flush any selections made while disconnected
+          flushPendingSelections();
 
           // Start ping interval
           pingIntervalRef.current = setInterval(() => {
@@ -200,7 +218,7 @@ export function useWebSocketClient(
         wsRef.current = null;
       }
     };
-  }, [port]); // Only depend on port
+  }, [port, flushPendingSelections]); // Only depend on port and flush callback
 
   return {
     connected,

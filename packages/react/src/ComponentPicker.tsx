@@ -69,7 +69,7 @@ function ComponentPickerImpl({
         enableSelectionMode();
       }
     },
-    enabled: connected,
+    enabled: true,
   });
 
   // Handle element selection
@@ -141,7 +141,6 @@ function ComponentPickerImpl({
         <button
           data-component-picker="status"
           onClick={() => {
-            if (!connected) return;
             if (isSelectionMode) {
               disableSelectionMode();
             } else {
@@ -153,11 +152,9 @@ function ComponentPickerImpl({
             bottom: 16,
             right: 16,
             padding: '8px 12px',
-            backgroundColor: !connected
-              ? '#ef4444'
-              : isSelectionMode
-                ? '#3b82f6'
-                : '#22c55e',
+            backgroundColor: isSelectionMode
+              ? '#3b82f6'
+              : '#22c55e',
             color: 'white',
             borderRadius: '9999px',
             fontSize: '12px',
@@ -170,7 +167,7 @@ function ComponentPickerImpl({
             gap: '6px',
             boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
             border: 'none',
-            cursor: connected ? 'pointer' : 'not-allowed',
+            cursor: 'pointer',
             transition: 'background-color 0.2s ease',
           }}
         >
@@ -179,20 +176,18 @@ function ComponentPickerImpl({
               width: 8,
               height: 8,
               borderRadius: '50%',
-              backgroundColor: 'white',
-              animation: !connected ? 'pulse 2s infinite' : isSelectionMode ? 'pulse 1s infinite' : 'none',
+              backgroundColor: !connected ? '#fbbf24' : 'white',
+              animation: isSelectionMode ? 'pulse 1s infinite' : !connected ? 'pulse 2s infinite' : 'none',
             }}
           />
-          {!connected
-            ? 'Connecting...'
-            : isSelectionMode
-              ? (
-                <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <span>{selectionMessage || 'Click a component'}</span>
-                  <span style={{ opacity: 0.7, fontSize: '10px' }}>ESC to cancel</span>
-                </span>
-              )
-              : 'Select Component'}
+          {isSelectionMode
+            ? (
+              <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span>{selectionMessage || 'Click a component'}</span>
+                <span style={{ opacity: 0.7, fontSize: '10px' }}>ESC to cancel</span>
+              </span>
+            )
+            : 'Select Component'}
         </button>
       )}
     </>
